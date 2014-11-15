@@ -3,6 +3,6 @@ package projeto.main;
 public enum Category {
 	GERAL,
 	DESPORTO,
-	CAÇA,
+	CACA,
 	COZINHA
 }
