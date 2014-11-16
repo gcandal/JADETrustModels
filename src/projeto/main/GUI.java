@@ -6,9 +6,12 @@ import jade.wrapper.AgentContainer;
 import jade.wrapper.AgentController;
 import jade.wrapper.StaleProxyException;
 
+import java.util.stream.IntStream;
+
 public class GUI {
 
 	public static void main(String[] args) {
+        /*
 		String []arguments = {"-gui", ""};
 		
 		Boot.main(arguments);
@@ -29,7 +32,17 @@ public class GUI {
 			ac.start();
 		} catch (StaleProxyException e) {
 			e.printStackTrace();
-		}
+		}*/
+
+        Integer nQuestions = 200;
+        KnowledgeBase knowledgeBase = KnowledgeBase.getInstance();
+
+        fillKnowledgeBase(knowledgeBase, nQuestions);
+
+        System.out.println(knowledgeBase);
 	}
-	
+
+    private static void fillKnowledgeBase(KnowledgeBase knowledgeBase, Integer nQuestions) {
+        IntStream.range(0, nQuestions).forEach( i -> knowledgeBase.addQuestion(new Question()));
+    }
 }
