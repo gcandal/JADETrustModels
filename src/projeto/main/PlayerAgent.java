@@ -63,13 +63,13 @@ public class PlayerAgent extends Agent {
 		} );
 	}
 
-	private void setupTrustModel(String trustModelName) {
+	private void setupTrustModel(String trustModelName, String nSources) {
 		switch(trustModelName) {
 		case "BETA":
-			trustModel = new BETA();
+			trustModel = new BETA(nSources);
 			break;
 		case "Sinalpha":
-			trustModel = new Sinalpha();
+			trustModel = new Sinalpha(nSources);
 			break;
 		default:
 			assert(false);

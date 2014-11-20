@@ -4,6 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class TrustModel {
+
+	public TrustModel(String nSources){
+		this.nSources = Integer.parseInt(nSources);
+	}
+
+	protected int nSources;
+
 	private class Record {
 		public Integer round;
 		public Boolean correctAnswer;
