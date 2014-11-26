@@ -49,4 +49,8 @@ public class KnowledgeBase {
 
         return sb.toString();
     }
+
+    public void fillRandom(Integer nQuestions) {
+        IntStream.range(0, nQuestions).forEach( i -> addQuestion(new Question()));
+    }
 }

@@ -6,13 +6,11 @@ import jade.wrapper.AgentContainer;
 import jade.wrapper.AgentController;
 import jade.wrapper.StaleProxyException;
 
-import java.util.stream.IntStream;
-
 public class GUI {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
         /*
-		String []arguments = {"-gui", ""};
+        String []arguments = {"-gui", ""};
 		
 		Boot.main(arguments);
 		AgentContainer container = jade.core.Runtime.instance().createMainContainer( new ProfileImpl() );
@@ -36,13 +34,8 @@ public class GUI {
 
         Integer nQuestions = 200;
         KnowledgeBase knowledgeBase = KnowledgeBase.getInstance();
-
-        fillKnowledgeBase(knowledgeBase, nQuestions);
+        knowledgeBase.fillRandom(nQuestions);
 
         System.out.println(knowledgeBase);
-	}
-
-    private static void fillKnowledgeBase(KnowledgeBase knowledgeBase, Integer nQuestions) {
-        IntStream.range(0, nQuestions).forEach( i -> knowledgeBase.addQuestion(new Question()));
     }
 }

@@ -71,10 +71,7 @@ public class Sinalpha extends TrustModel {
 	}
 
 	@Override
-	public String chooseSource(String categoryS, Integer round) {
-
-		Category category = Category.valueOf(categoryS);
-
+	public String chooseSource(Category category, Integer round) {
 		//specialist already detected
 		for(Iterator i = specialists.entrySet().iterator(); i.hasNext(); ) {
 			HashMap.Entry pairs = (HashMap.Entry)i.next();

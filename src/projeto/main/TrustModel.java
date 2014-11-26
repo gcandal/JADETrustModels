@@ -2,14 +2,10 @@ package projeto.main;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class TrustModel {
-
-	public TrustModel(String nSources){
-		this.nSources = Integer.parseInt(nSources);
-	}
-
-	protected int nSources;
+	protected int nSources = 0;
 
 	private class Record {
 		public Integer round;
@@ -23,21 +19,24 @@ public abstract class TrustModel {
 			sourceId = _sourceId;
 			category = _category;
 		}
-	};
+	}
 
-	private ArrayList<Record> records;
+    protected List<String> sourceIds = new ArrayList<>();
+	protected List<Record> records = new ArrayList<>();
 
 	public void addRecord(Integer round, Boolean correctAnswer, String sourceId, Category category) {
 		records.add(new Record(round, correctAnswer, sourceId, category));
 	}
+
+    public abstract void addSourceId(String sourceId);
 	
-	public abstract String chooseSource(String category, Integer round);
+	public abstract String chooseSource(Category category, Integer round);
 	
-	public ArrayList<Record> getRecords() {
+	public List<Record> getRecords() {
 		return records;
 	}
 	
-	protected ArrayList<Record> getRecordsFromCategory(Category category) {
-		return records;
+	protected List<Record> getRecordsFromCategory(Category category) {
+        return records.stream().filter(r -> r.category.equals(category)).collect(Collectors.toList());
 	}
 }
