@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public abstract class TrustModel {
-	protected int nSources = 0;
 
 	private class Record {
 		public Integer round;
@@ -28,7 +27,9 @@ public abstract class TrustModel {
 		records.add(new Record(round, correctAnswer, sourceId, category));
 	}
 
-    public abstract void addSourceId(String sourceId);
+    public void addSourceId(String sourceId){
+    	sourceIds.add(sourceId);
+    }
 	
 	public abstract String chooseSource(Category category, Integer round);
 	

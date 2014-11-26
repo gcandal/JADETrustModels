@@ -2,6 +2,7 @@ package projeto.main;
 
 import javax.sound.midi.spi.SoundbankReader;
 import javax.xml.transform.Source;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,10 +11,6 @@ import java.util.Random;
 
 
 public class Sinalpha extends TrustModel {
-
-	public Sinalpha(String nSources){
-		super(nSources);
-	}
 
 	private final int STEPS = 12;//number of steps to reach trustworthiness
 
@@ -24,13 +21,13 @@ public class Sinalpha extends TrustModel {
 	private double lambda_positive = 1.0;
 	private double lambda_negative = -1.5;
 
-	private HashMap<Integer, ArrayList<Double>> funcS = new HashMap<>(); //Sinalpha trust function <sourceID, alpha>
-	private HashMap<Integer, Category> specialists = new HashMap<>(); //<Source,_>
-	private HashMap<Integer, Category> possible_specialists = new HashMap<>(); //<Source,_>
-	private HashMap<Integer, Integer> steps_log = new HashMap<>(); //<Source,Steps>
+	private HashMap<String, ArrayList<Double>> funcS = new HashMap<>(); //Sinalpha trust function <sourceID, alpha>
+	private HashMap<String, Category> specialists = new HashMap<>(); //<Source,_>
+	private HashMap<String, Category> possible_specialists = new HashMap<>(); //<Source,_>
+	private HashMap<String, Integer> steps_log = new HashMap<>(); //<Source,Steps>
 
 
-	private void setTrust(boolean isCorrect, int source, Category category){
+	private void setTrust(boolean isCorrect, String source, Category category){
 
 		//initialize maps
 		if ( !funcS.containsKey(source) )
@@ -40,7 +37,11 @@ public class Sinalpha extends TrustModel {
 
 		//calc of trustworthiness
 		double lambda = (isCorrect) ? lambda_positive : lambda_negative;
-		double alpha = funcS.get(source).get(funcS.get(source).size()-1) + lambda * omega;//value of last element
+		double alpha;
+		if(funcS.get(source).size()!=0)
+			alpha = funcS.get(source).get(funcS.get(source).size()-1) + lambda * omega;//value of last element;
+		else
+			alpha = alpha_min;
 		if(alpha > alpha_min)
 			if(alpha >= alpha_max)
 				alpha = alpha_max;
@@ -66,7 +67,7 @@ public class Sinalpha extends TrustModel {
 	}
 
 	public void addRecord(Integer round, Boolean correctAnswer, String sourceId, Category category) {
-		setTrust(correctAnswer,Integer.parseInt(sourceId),category);
+		setTrust(correctAnswer,sourceId,category);
 		super.addRecord(round,correctAnswer,sourceId,category);
 	}
 
@@ -75,22 +76,32 @@ public class Sinalpha extends TrustModel {
 		//specialist already detected
 		for(Iterator i = specialists.entrySet().iterator(); i.hasNext(); ) {
 			HashMap.Entry pairs = (HashMap.Entry)i.next();
-			if((Category)pairs.getValue() == category)
-				return String.valueOf((Integer) pairs.getKey());
+			if((Category)pairs.getValue() == category){
+				String source = (String) pairs.getKey();
+				System.out.println("specialist->"+source);
+				return source;
+			}
 			i.remove(); // avoids a ConcurrentModificationException
 		}
 
 		//possible specialist
 		for(Iterator i = possible_specialists.entrySet().iterator(); i.hasNext(); ) {
 			HashMap.Entry pairs = (HashMap.Entry)i.next();
-			if((Category)pairs.getValue() == category)
-				return String.valueOf((Integer) pairs.getKey());
+			if((Category)pairs.getValue() == category){
+				String source = (String) pairs.getKey();
+				System.out.println("possible specialist->"+source);
+				return source;
+			}
 			i.remove();
 		}
 
 		//no specialist => get random
 		Random generator = new Random();
-		return String.valueOf(generator.nextInt(nSources));
+		int index = generator.nextInt(sourceIds.size()-1);
+		String source = sourceIds.get(index);
+		System.out.println("no specialist->"+source);
+		return source;
 	}
+
 
 }

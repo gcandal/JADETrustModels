@@ -47,7 +47,6 @@ public class BETA extends TrustModel {
 
     @Override
     public void addSourceId(String sourceId) {
-        nSources++;
 
         for (Category category : Category.values()) {
             initializeAgentCategory(sourceId, category);
