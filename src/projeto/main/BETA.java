@@ -47,6 +47,7 @@ public class BETA extends TrustModel {
 
     @Override
     public void addSourceId(String sourceId) {
+        super.addSourceId(sourceId);
 
         for (Category category : Category.values()) {
             initializeAgentCategory(sourceId, category);
@@ -69,7 +70,7 @@ public class BETA extends TrustModel {
 
 
     private void scaleVtoRS(Double v, SourceTrust source) {
-        source.r.add((1 + v) / 2.0);
+        source.r.add((1 - v) / 2.0);
         source.s.add((1 + v) / 2.0);
     }
 
