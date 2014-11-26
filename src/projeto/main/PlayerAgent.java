@@ -45,21 +45,20 @@ public class PlayerAgent extends Agent {
 				MessageTemplate.MatchPerformative(ACLMessage.REQUEST) );
 
 		addBehaviour(new AchieveREResponder(this, template) {
-			protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
-				return null;
-			}
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 
-			protected ACLMessage prepareResultNotification(ACLMessage request, ACLMessage response) throws FailureException {
-				System.out.println("Agent "+getLocalName()+": Action successfully performed");
+			protected ACLMessage handleRequest(ACLMessage request) throws NotUnderstoodException, RefuseException {
 				ACLMessage inform = request.createReply();
 				inform.setPerformative(ACLMessage.INFORM);
-				try {
-					inform.setContentObject(new String("hey!"));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				Category c = KnowledgeBase.getInstance().getCategoryForQuestion(request.getContent());
+				//trustModel.chooseSource( String?
+				inform.setContent("");
 				return inform;
 			}
+			
 		} );
 	}
 

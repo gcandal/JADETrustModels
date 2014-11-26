@@ -19,12 +19,25 @@ public class KnowledgeBase {
         unsorted_questions.add(question);
     }
 
+    
+    public Category getCategoryForQuestion(String question){
+    	for(int i = 0; i < unsorted_questions.size(); i++)
+    	{
+    		Question q = unsorted_questions.get(i);
+    		if (q.questionText.equals(question))
+    		{
+    			return q.category;
+    		}
+    	}
+    	return null;
+    }
+    
     public List<Question> getQuestionsFromCategory(Category category) {
         return questions.get(category);
     }
 
-    public List<Question> getNRandomQuestions(Integer n) {
-        List<Question> random_questions = new ArrayList<>();
+    public ArrayList<Question> getNRandomQuestions(Integer n) {
+    	ArrayList<Question> random_questions = new ArrayList<>();
 
         IntStream.range(0, n)
                 .forEach(x -> random_questions.add(unsorted_questions.get(random.nextInt(unsorted_questions.size()))));
