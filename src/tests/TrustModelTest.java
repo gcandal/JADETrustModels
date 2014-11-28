@@ -62,6 +62,22 @@ public class TrustModelTest {
         beta.addRecord(round, true, sourceId, category);
         Assert.assertEquals(sourceId, beta.chooseSource(category, round));
 
+
+        // Forgetting
+        beta = new BETA();
+        sourceIds.forEach(beta::addSourceId);
+
+        category = Category.randomCategory();
+        round = 0;
+        sourceId = "Quim";
+        beta.addRecord(round++, true, sourceId, category);
+        sourceId = "Manel";
+        beta.addRecord(round++, true, sourceId, category);
+        Assert.assertEquals(sourceId, beta.chooseSource(category, round));
+
+        sourceId = "Quim";
+        beta.addRecord(round++, true, sourceId, category);
+        Assert.assertEquals(sourceId, beta.chooseSource(category, round));
     }
 
     private boolean choosesAlwaysSameSource(TrustModel beta, Integer round, Category category) {
