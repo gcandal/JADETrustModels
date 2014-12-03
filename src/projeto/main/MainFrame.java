@@ -50,9 +50,19 @@ public class MainFrame extends JFrame{
 
             //Action for select button
             if(btn == betaButton){
+                BETA beta = new BETA();
+                beta.addSourceId("a");
+                beta.addSourceId("b");
+                beta.addSourceId("c");
+                beta.addSourceId("d");
+                for (int i = 0; i < 15; i++) {
+                    beta.addRecord(true, "a", Category.DESPORTO);
+                }
+                String specialist = beta.chooseSource(Category.DESPORTO);
+                System.out.println(specialist);
+                ArrayList<Double> chartValues = beta.getTrust(specialist, Category.DESPORTO);
+                Chart.drawSinalpha(chartValues);
 
-
-                //Action for graph button
             } else if(btn == sinalphaButton){
                 Sinalpha sinalpha = new Sinalpha();
                 sinalpha.addSourceId("a");

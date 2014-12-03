@@ -7,92 +7,93 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 
-public class Sinalpha extends TrustModel {
+public class Sinalpha implements TrustModel {
 
-	private final int STEPS = 12;//number of steps to reach trustworthiness
-	private final double omega =  Math.PI/STEPS; //speed to reach trustwordiness (pi/12 = 12 steps)
-	private final double delta = 0.5; // normalize for range [0,1]
-	private final double alpha_min = 3*Math.PI/2;
-	private final double alpha_max = 5*Math.PI/2;
-	private final double lambda_positive = 1.0;
-	private final double lambda_negative = -1.5;
+    private final int STEPS = 12;//number of steps to reach trustworthiness
+    private final double omega = Math.PI / STEPS; //speed to reach trustwordiness (pi/12 = 12 steps)
+    private final double delta = 0.5; // normalize for range [0,1]
+    private final double alpha_min = 3 * Math.PI / 2;
+    private final double alpha_max = 5 * Math.PI / 2;
+    private final double lambda_positive = 1.0;
+    private final double lambda_negative = -1.5;
 
-	private class SourceTrust {
-		public Double alpha;//x
-		public Double trust;//y
-	}
+    private class SourceTrust {
+        public Double alpha;//x
+        public Double trust;//y
+    }
 
-	public Map<Category, Map<String, ArrayList<SourceTrust>>> categoryTrust = new HashMap<>(Category.values().length);
+    public Map<Category, Map<String, ArrayList<SourceTrust>>> categoryTrust = new HashMap<>(Category.values().length);
+    protected List<String> sourceIds = new ArrayList<>();
 
-	public ArrayList<Double> getTrust(String source, Category category){
-		ArrayList<Double> func = new ArrayList<>();
-		for(Iterator i = categoryTrust.get(category).get(source).iterator(); i.hasNext(); )
-			func.add(((SourceTrust)i.next()).trust);
-		return func;
-	}
+    @Override
+    public ArrayList<Double> getTrust(String source, Category category) {
+        ArrayList<Double> func = new ArrayList<>();
+        for (Iterator i = categoryTrust.get(category).get(source).iterator(); i.hasNext(); )
+            func.add(((SourceTrust) i.next()).trust);
+        return func;
+    }
 
-	@Override
-	public void addSourceId(String sourceId){
-		for (Category category : Category.values()) {
-			categoryTrust.putIfAbsent(category, new HashMap<>());
-			categoryTrust.get(category).put(sourceId, new ArrayList<>());
-		}
-		super.addSourceId(sourceId);
-	}
+    @Override
+    public void addSourceId(String sourceId) {
+        for (Category category : Category.values()) {
+            categoryTrust.putIfAbsent(category, new HashMap<>());
+            categoryTrust.get(category).put(sourceId, new ArrayList<>());
+        }
 
-	@Override
-	public void addRecord(Boolean isCorrect, String source, Category category) {
-		//calc of trustworthiness
-		SourceTrust sourceTrust = new SourceTrust();
-		double lambda = (isCorrect) ? lambda_positive : lambda_negative;
-		//double alpha;
-		int size = categoryTrust.get(category).get(source).size();
-		if(size > 0){
-			sourceTrust.alpha = categoryTrust.get(category).get(source).get(size-1).alpha + lambda * omega;
-		} else {
-			sourceTrust.alpha = alpha_min;
-		}
-		if(sourceTrust.alpha >= alpha_min) {
-			if (sourceTrust.alpha > alpha_max)
-				sourceTrust.alpha = alpha_max;
-		} else {
-			sourceTrust.alpha = alpha_min;
-		}
+        sourceIds.add(sourceId);
+    }
 
-		double sin = Math.sin(sourceTrust.alpha);
+    @Override
+    public void addRecord(Boolean isCorrect, String source, Category category) {
+        //calc of trustworthiness
+        SourceTrust sourceTrust = new SourceTrust();
+        double lambda = (isCorrect) ? lambda_positive : lambda_negative;
+        //double alpha;
+        int size = categoryTrust.get(category).get(source).size();
+        if (size > 0) {
+            sourceTrust.alpha = categoryTrust.get(category).get(source).get(size - 1).alpha + lambda * omega;
+        } else {
+            sourceTrust.alpha = alpha_min;
+        }
+        if (sourceTrust.alpha >= alpha_min) {
+            if (sourceTrust.alpha > alpha_max)
+                sourceTrust.alpha = alpha_max;
+        } else {
+            sourceTrust.alpha = alpha_min;
+        }
 
-		sourceTrust.trust = delta * sin + delta;
+        double sin = Math.sin(sourceTrust.alpha);
 
-		//add alpha and y(x) to func
-		categoryTrust.get(category).get(source).add(sourceTrust);
+        sourceTrust.trust = delta * sin + delta;
 
-		super.addRecord(isCorrect,source,category);
-	}
+        //add alpha and y(x) to func
+        categoryTrust.get(category).get(source).add(sourceTrust);
+    }
 
-	@Override
-	public String chooseSource(Category category) {
+    @Override
+    public String chooseSource(Category category) {
 
-		String betterSource = "";
-		Double betterTrust = 0.0;
-		for(Iterator i = categoryTrust.get(category).entrySet().iterator(); i.hasNext(); ) {
-			HashMap.Entry pairs = (HashMap.Entry)i.next();
-			String source = (String) pairs.getKey();
-			ArrayList<SourceTrust> trustFunc = ((ArrayList<SourceTrust>)pairs.getValue());
-			Double trust = (trustFunc.size()>0) ? trustFunc.get(trustFunc.size()-1).trust : 0.0;
-			if(trust > betterTrust){
-				betterSource = source;
-				betterTrust = trust;
-			}
-		}
+        String betterSource = "";
+        Double betterTrust = 0.0;
+        for (Iterator i = categoryTrust.get(category).entrySet().iterator(); i.hasNext(); ) {
+            HashMap.Entry pairs = (HashMap.Entry) i.next();
+            String source = (String) pairs.getKey();
+            ArrayList<SourceTrust> trustFunc = ((ArrayList<SourceTrust>) pairs.getValue());
+            Double trust = (trustFunc.size() > 0) ? trustFunc.get(trustFunc.size() - 1).trust : 0.0;
+            if (trust > betterTrust) {
+                betterSource = source;
+                betterTrust = trust;
+            }
+        }
 
-		if(betterTrust != 0){
-			return betterSource;
-		}else{//no specialist => get random
-			Random generator = new Random();
-			int index = generator.nextInt(sourceIds.size()-1);
-			String source = sourceIds.get(index);
-			return source;
-		}
-	}
+        if (betterTrust != 0) {
+            return betterSource;
+        } else {//no specialist => get random
+            Random generator = new Random();
+            int index = generator.nextInt(sourceIds.size() - 1);
+            String source = sourceIds.get(index);
+            return source;
+        }
+    }
 
 }

@@ -2,25 +2,30 @@ package projeto.main;
 
 import java.util.*;
 
-public class BETA extends TrustModel {
+public class BETA implements TrustModel {
     private class SourceTrust {
         public List<Integer> round = new ArrayList<>();
-        public List<Double> s = new ArrayList<>(), r = new ArrayList<>();
+        public ArrayList<Double> s = new ArrayList<>(),
+                r = new ArrayList<>(),
+                trust = new ArrayList<>();
     }
 
     private Map<Category, Map<String, SourceTrust>> categoryTrust = new HashMap<>(Category.values().length);
+    protected List<String> sourceIds = new ArrayList<>();
     private Random random = new Random();
     private Integer currentRound = 0;
     private final Double FORGETTING_FACTOR = 0.8;
 
-    @Override
     public String chooseSource(Category category) {
         Double maxValue = 0.0, currentValue;
         String maxSourceId = "";
 
         for (Map.Entry<String, SourceTrust> e : categoryTrust.get(category).entrySet()) {
             // System.out.println(e.getKey());
-            currentValue = calculateTrust(e.getValue());
+            if (e.getValue().trust.size() > 0)
+                currentValue = e.getValue().trust.get(e.getValue().trust.size() - 1);
+            else
+                currentValue = 0.0;
 
             if (currentValue > maxValue) {
                 maxSourceId = e.getKey();
@@ -35,9 +40,12 @@ public class BETA extends TrustModel {
     }
 
     @Override
-    public void addRecord(Boolean correctAnswer, String sourceId, Category category) {
-        super.addRecord(correctAnswer, sourceId, category);
+    public ArrayList<Double> getTrust(String source, Category category) {
+        return categoryTrust.get(category).get(source).trust;
+    }
 
+    @Override
+    public void addRecord(Boolean correctAnswer, String sourceId, Category category) {
         SourceTrust source = categoryTrust.get(category).get(sourceId);
 
         if (correctAnswer)
@@ -53,7 +61,7 @@ public class BETA extends TrustModel {
         if (sourceIds.contains(sourceId))
             return;
 
-        super.addSourceId(sourceId);
+        sourceIds.add(sourceId);
 
         for (Category category : Category.values()) {
             initializeAgentCategory(sourceId, category);
@@ -79,13 +87,8 @@ public class BETA extends TrustModel {
         source.r.add((1 - v) / 2.0);
         source.s.add((1 + v) / 2.0);
         source.round.add(currentRound);
+        calculateTrust(source);
     }
-
-    /*
-    private Double sum(List<Double> array) {
-        return array.stream().reduce(0.0, Double::sum);
-    }
-     */
 
     private Double weightedSum(List<Double> values, List<Integer> round) {
         Double sum = 0.0;
@@ -96,19 +99,14 @@ public class BETA extends TrustModel {
         return sum;
     }
 
-    private Double calculateTrust(SourceTrust source) {
-        Double sumS, sumR;
+    private void calculateTrust(SourceTrust source) {
+        Double sumS, sumR, trust;
 
         sumS = weightedSum(source.s, source.round);
         sumR = weightedSum(source.r, source.round);
-        //System.out.println("Depois: " + (sumS - sumR) / (sumS + sumR + 2));
 
-        /*
-        sumS = sum(source.s);
-        sumR = sum(source.r);
-        System.out.println("Antes: " + (sumS - sumR) / (sumS + sumR + 2));
-        */
+        trust = (sumS - sumR) / (sumS + sumR + 2);
 
-        return (sumS - sumR) / (sumS + sumR + 2);
+        source.trust.add(trust);
     }
 }
