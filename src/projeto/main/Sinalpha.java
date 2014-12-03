@@ -66,13 +66,14 @@ public class Sinalpha extends TrustModel {
 			specialists.put(source,category);
 	}
 
-	public void addRecord(Integer round, Boolean correctAnswer, String sourceId, Category category) {
+    @Override
+	public void addRecord(Boolean correctAnswer, String sourceId, Category category) {
 		setTrust(correctAnswer,sourceId,category);
-		super.addRecord(round,correctAnswer,sourceId,category);
+		super.addRecord(correctAnswer,sourceId,category);
 	}
 
 	@Override
-	public String chooseSource(Category category, Integer round) {
+	public String chooseSource(Category category) {
 		//specialist already detected
 		for(Iterator i = specialists.entrySet().iterator(); i.hasNext(); ) {
 			HashMap.Entry pairs = (HashMap.Entry)i.next();

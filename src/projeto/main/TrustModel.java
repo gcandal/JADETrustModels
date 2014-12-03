@@ -7,13 +7,11 @@ import java.util.stream.Collectors;
 public abstract class TrustModel {
 
 	private class Record {
-		public Integer round;
 		public Boolean correctAnswer;
 		public String sourceId;
 		public Category category;
 		
-		public Record(Integer _round, Boolean _correctAnswer, String _sourceId, Category _category) {
-			round = _round;
+		public Record(Boolean _correctAnswer, String _sourceId, Category _category) {
 			correctAnswer = _correctAnswer;
 			sourceId = _sourceId;
 			category = _category;
@@ -23,15 +21,15 @@ public abstract class TrustModel {
     protected List<String> sourceIds = new ArrayList<>();
 	protected List<Record> records = new ArrayList<>();
 
-	public void addRecord(Integer round, Boolean correctAnswer, String sourceId, Category category) {
-		records.add(new Record(round, correctAnswer, sourceId, category));
+	public void addRecord(Boolean correctAnswer, String sourceId, Category category) {
+		records.add(new Record(correctAnswer, sourceId, category));
 	}
 
     public void addSourceId(String sourceId){
     	sourceIds.add(sourceId);
     }
 	
-	public abstract String chooseSource(Category category, Integer round);
+	public abstract String chooseSource(Category category);
 	
 	public List<Record> getRecords() {
 		return records;

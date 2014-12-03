@@ -4,7 +4,6 @@ import java.util.*;
 
 public class BETA extends TrustModel {
     private class SourceTrust {
-        public List<Integer> round = new ArrayList<>();
         public List<Double> s = new ArrayList<>(), r = new ArrayList<>();
     }
 
@@ -14,11 +13,12 @@ public class BETA extends TrustModel {
     private final Double FORGETTING_FACTOR = 1.0;
 
     @Override
-    public String chooseSource(Category category, Integer round) {
+    public String chooseSource(Category category) {
         Double maxValue = 0.0, currentValue;
         String maxSourceId = "";
 
         for (Map.Entry<String, SourceTrust> e : categoryTrust.get(category).entrySet()) {
+            System.out.println();
             currentValue = calculateTrust(e.getValue());
 
             if (currentValue > maxValue) {
@@ -34,20 +34,17 @@ public class BETA extends TrustModel {
     }
 
     @Override
-    public void addRecord(Integer round, Boolean correctAnswer, String sourceId, Category category) {
-        super.addRecord(round, correctAnswer, sourceId, category);
+    public void addRecord(Boolean correctAnswer, String sourceId, Category category) {
+        super.addRecord(correctAnswer, sourceId, category);
 
         SourceTrust source = categoryTrust.get(category).get(sourceId);
-
-        source.round.add(round);
 
         if (correctAnswer)
             scaleVtoRS(1.0, source);
         else
             scaleVtoRS(-1.0, source);
 
-        if(currentRound < round)
-            currentRound = round;
+        currentRound++;
     }
 
     @Override
@@ -79,23 +76,28 @@ public class BETA extends TrustModel {
         source.s.add((1 + v) / 2.0);
     }
 
-    /*
+
     private Double sum(List<Double> array) {
         return array.stream().reduce(0.0, Double::sum);
     }
-    */
 
-    private Double weightedSum(List<Double> values, List<Integer> rounds) {
+
+    private Double weightedSum(List<Double> values) {
         Double sum = 0.0;
 
-        for(int i = 0; i < values.size(); i++)
-            sum += values.get(i) * Math.pow(FORGETTING_FACTOR, currentRound - rounds.get(i));
+        for (int i = 0; i < values.size(); i++)
+            sum += values.get(i) * Math.pow(FORGETTING_FACTOR, currentRound - i);
 
         return sum;
     }
 
     private Double calculateTrust(SourceTrust source) {
-        Double sumS = weightedSum(source.s, source.round), sumR = weightedSum(source.r, source.round);
+        Double sumS = sum(source.s), sumR = sum(source.r);
+        System.out.println("Antes: " + sumS + " " + sumR);
+        sumS = weightedSum(source.s);
+        sumR = weightedSum(source.r);
+        System.out.println("Depois: " + sumS + " " + sumR);
+
 
         return (sumS - sumR) / (sumS + sumR + 2);
     }
