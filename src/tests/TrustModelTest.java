@@ -17,10 +17,10 @@ public class TrustModelTest {
         sourceIds.add("Ze");
         sourceIds.add("Manel");
 
-        // sameSourceTests(sourceIds);
-        // countingTrues(sourceIds);
+        sameSourceTests(sourceIds);
+        countingTrues(sourceIds);
         notPickingLastInsert(sourceIds);
-        // forgetting(sourceIds);
+        forgetting(sourceIds);
     }
 
     private void forgetting(List<String> sourceIds) {
@@ -36,8 +36,7 @@ public class TrustModelTest {
         sourceId = "Manel";
         beta.addRecord(true, sourceId, category);
         Assert.assertEquals(sourceId, beta.chooseSource(category));
-
-        sourceId = "Quim";
+        sourceId = "Ze";
         beta.addRecord(true, sourceId, category);
         Assert.assertEquals(sourceId, beta.chooseSource(category));
     }
@@ -57,6 +56,7 @@ public class TrustModelTest {
         beta.addRecord(false, sourceId, category);
         beta.addRecord(false, sourceId, category);
         sourceId = "Quim";
+        beta.addRecord(false, sourceId, category);
         beta.addRecord(true, sourceId, category);
         Assert.assertEquals("Ze", beta.chooseSource(category));
     }
