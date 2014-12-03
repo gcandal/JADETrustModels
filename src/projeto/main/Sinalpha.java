@@ -24,6 +24,13 @@ public class Sinalpha extends TrustModel {
 
 	public Map<Category, Map<String, ArrayList<SourceTrust>>> categoryTrust = new HashMap<>(Category.values().length);
 
+	public ArrayList<Double> getTrust(String source, Category category){
+		ArrayList<Double> func = new ArrayList<>();
+		for(Iterator i = categoryTrust.get(category).get(source).iterator(); i.hasNext(); )
+			func.add(((SourceTrust)i.next()).trust);
+		return func;
+	}
+
 	@Override
 	public void addSourceId(String sourceId){
 		for (Category category : Category.values()) {
@@ -33,14 +40,8 @@ public class Sinalpha extends TrustModel {
 		super.addSourceId(sourceId);
 	}
 
-	public ArrayList<Double> getTrust(String source, Category category){
-		ArrayList<Double> func = new ArrayList<>();
-		for(Iterator i = categoryTrust.get(category).get(source).iterator(); i.hasNext(); )
-			func.add(((SourceTrust)i.next()).trust);
-		return func;
-	}
-
-	public void addRecord(Integer round, Boolean isCorrect, String source, Category category) {
+	@Override
+	public void addRecord(Boolean isCorrect, String source, Category category) {
 		//calc of trustworthiness
 		SourceTrust sourceTrust = new SourceTrust();
 		double lambda = (isCorrect) ? lambda_positive : lambda_negative;
@@ -65,11 +66,11 @@ public class Sinalpha extends TrustModel {
 		//add alpha and y(x) to func
 		categoryTrust.get(category).get(source).add(sourceTrust);
 
-		super.addRecord(round,isCorrect,source,category);
+		super.addRecord(isCorrect,source,category);
 	}
 
 	@Override
-	public String chooseSource(Category category, Integer round) {
+	public String chooseSource(Category category) {
 
 		String betterSource = "";
 		Double betterTrust = 0.0;
@@ -93,6 +94,5 @@ public class Sinalpha extends TrustModel {
 			return source;
 		}
 	}
-
 
 }

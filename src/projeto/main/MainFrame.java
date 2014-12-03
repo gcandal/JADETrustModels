@@ -61,10 +61,10 @@ public class MainFrame extends JFrame{
                 sinalpha.addSourceId("d");
                 String source="";
                 for (int i = 0; i < 15; i++) {
-                    source = sinalpha.chooseSource(Category.DESPORTO, 0);
-                    sinalpha.addRecord(0, true, source, Category.DESPORTO);
+                    source = sinalpha.chooseSource(Category.DESPORTO);
+                    sinalpha.addRecord(true, source, Category.DESPORTO);
                 }
-                String specialist = sinalpha.chooseSource(Category.DESPORTO, 0);
+                String specialist = sinalpha.chooseSource(Category.DESPORTO);
                 ArrayList<Double> chartValues = sinalpha.getTrust(specialist, Category.DESPORTO);
                 Chart.drawSinalpha(chartValues);
             }
