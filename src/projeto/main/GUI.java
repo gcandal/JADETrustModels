@@ -6,6 +6,8 @@ import jade.wrapper.AgentContainer;
 import jade.wrapper.AgentController;
 import jade.wrapper.StaleProxyException;
 
+import java.util.ArrayList;
+
 public class GUI {
 
     public static void main(String[] args) {
@@ -37,5 +39,7 @@ public class GUI {
         knowledgeBase.fillRandom(nQuestions);
 
         System.out.println(knowledgeBase);
+
+		MainFrame ui = new MainFrame();
     }
 }
