@@ -105,8 +105,6 @@ public class PlayerAgent extends Agent {
 		} );
 	}
 
-	
-
 	private AchieveREInitiator getAnswer(String question, String source, AchieveREResponder pending) {
 		// Fill the REQUEST message
 		ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
