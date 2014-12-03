@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
-import java.util.function.BiConsumer;
 
 public class AskerAgent extends Agent {
 	/**
@@ -60,7 +59,7 @@ public class AskerAgent extends Agent {
 
 		msg.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
 		msg.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
-		msg.setContent(questions.get(current_round).questionText);
+		msg.setContent(current_round + ":-:" + questions.get(current_round).questionText);
 
 		System.out.println("A perguntar a " + nResponders + " agentes...");
 		
@@ -105,7 +104,7 @@ public class AskerAgent extends Agent {
 				
 				System.out.println("Moving on!");
 				
-				if( current_round <  nQuestions)
+				if( current_round < nQuestions)
 				{
 					current_round++;
 					askQuestion();

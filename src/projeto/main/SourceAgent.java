@@ -10,39 +10,49 @@ import jade.lang.acl.MessageTemplate;
 import jade.proto.AchieveREResponder;
 
 import java.io.IOException;
+import java.util.Random;
 
 public class SourceAgent extends Agent {
 
     private String category;
-    private int ID;
-
-    public int getID(){ return ID; };
-    public void setID(int i){ ID = i; };
-
-    public String getCategory(){ return category; };
-    public void setCategory(String c){ category = c; };
-
-
+    private Float randomnessPercentage;
+    private Random r;
+    
     protected void setup() {
+    	
+    	r = new Random();
+		String[] args = (String[]) getArguments();
+		category = args[0];
+		randomnessPercentage = Float.valueOf(args[1]);
+    	
         System.out.println("Agent "+getLocalName()+" waiting for requests...");
         MessageTemplate template = MessageTemplate.and(
                 MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
                 MessageTemplate.MatchPerformative(ACLMessage.REQUEST) );
 
         addBehaviour(new AchieveREResponder(this, template) {
-            protected ACLMessage prepareResponse(ACLMessage request) throws NotUnderstoodException, RefuseException {
-                return null;
-            }
 
-            protected ACLMessage prepareResultNotification(ACLMessage request, ACLMessage response) throws FailureException {
+			protected ACLMessage handleRequest(ACLMessage request) throws NotUnderstoodException, RefuseException {
                 System.out.println("Agent "+getLocalName()+": Action successfully performed");
                 ACLMessage inform = request.createReply();
                 inform.setPerformative(ACLMessage.INFORM);
-                try {
-                    inform.setContentObject(new String("hey!"));
-                } catch (IOException e) {
-                    e.printStackTrace();
+                String question = request.getContent();
+                String content = "";
+                if(category!="")
+                {
+                	Question q = KnowledgeBase.getInstance().getQuestion(question);
+                	content = q.answersText[q.rightAnswer];
+                    if(q.category.toString()==category)
+                    {
+                    	content = q.answersText[q.rightAnswer];
+                    } else 
+                    {
+                    	if(r.nextFloat()>=randomnessPercentage)
+                    		content = q.answersText[q.rightAnswer];
+                    	else content = q.answersText[r.nextInt(4)];
+                    }
                 }
+                inform.setContent(content);
                 return inform;
             }
         } );

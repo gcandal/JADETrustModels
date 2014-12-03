@@ -20,13 +20,13 @@ public class KnowledgeBase {
     }
 
     
-    public Category getCategoryForQuestion(String question){
+    public Question getQuestion(String question){
     	for(int i = 0; i < unsorted_questions.size(); i++)
     	{
     		Question q = unsorted_questions.get(i);
     		if (q.questionText.equals(question))
     		{
-    			return q.category;
+    			return q;
     		}
     	}
     	return null;

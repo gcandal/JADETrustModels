@@ -1,4 +1,4 @@
-package tests;
+/*package tests;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,4 +32,4 @@ public class TrustModelTest {
     public void testChooseSource() throws Exception {
 
     }
-}
+}*/

@@ -2,6 +2,7 @@ package projeto.main;
 
 import javax.sound.midi.spi.SoundbankReader;
 import javax.xml.transform.Source;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,8 +12,8 @@ import java.util.Random;
 
 public class Sinalpha extends TrustModel {
 
-	public Sinalpha(String nSources){
-		super(nSources);
+	public Sinalpha(){
+		super();
 	}
 
 	private final int STEPS = 12;//number of steps to reach trustworthiness
@@ -91,6 +92,12 @@ public class Sinalpha extends TrustModel {
 		//no specialist => get random
 		Random generator = new Random();
 		return String.valueOf(generator.nextInt(nSources));
+	}
+
+	@Override
+	public void addSourceId(String sourceId) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
