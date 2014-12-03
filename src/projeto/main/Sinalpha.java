@@ -104,5 +104,10 @@ public class Sinalpha extends TrustModel {
 		return source;
 	}
 
+	@Override
+	public void addSourceId(String sourceId) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }
