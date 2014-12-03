@@ -86,7 +86,7 @@ public class PlayerAgent extends Agent {
 					Integer round = Integer.valueOf(strs[0]);
 					question = strs[1];
 					Question q = KnowledgeBase.getInstance().getQuestion(question);
-					String source = trustModel.chooseSource(q.category, round);
+					String source = trustModel.chooseSource(q.category);
 					addBehaviour(getAnswer(question,source, this));
 					block();
 					return null;
