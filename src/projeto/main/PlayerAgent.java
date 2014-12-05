@@ -26,23 +26,15 @@ package projeto.main;
 
 import jade.core.AID;
 import jade.core.Agent;
+import jade.core.behaviours.CyclicBehaviour;
 import jade.domain.FIPANames;
-import jade.domain.FIPAAgentManagement.FailureException;
-import jade.domain.FIPAAgentManagement.NotUnderstoodException;
-import jade.domain.FIPAAgentManagement.RefuseException;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
-import jade.proto.AchieveREInitiator;
-import jade.proto.AchieveREResponder;
-
-import java.io.IOException;
-import java.util.Date;
-import java.util.Vector;
 
 public class PlayerAgent extends Agent {
+	private static final long serialVersionUID = 1L;
 	private TrustModel trustModel;
 	private String[] sources;
-	private String answer;
 
 	protected void setup() {
 		
@@ -50,6 +42,10 @@ public class PlayerAgent extends Agent {
 		MessageTemplate template = MessageTemplate.and(
 				MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
 				MessageTemplate.MatchPerformative(ACLMessage.REQUEST) );
+		
+		MessageTemplate templateReply = MessageTemplate.and(
+				MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
+				MessageTemplate.MatchPerformative(ACLMessage.INFORM) );
 
 		String[] args = (String[]) getArguments();
 		String trustModelstr = args[0];
@@ -66,85 +62,62 @@ public class PlayerAgent extends Agent {
 			break;
 		default:
 			assert(false);
+			break;
 		}
 		
 		for(int i = 0; i < sources.length; i++)
 			this.trustModel.addSourceId(sources[i]);
 		
-		addBehaviour(new AchieveREResponder(this, template) {
-			/**
-			 * 
-			 */
+		addBehaviour(new CyclicBehaviour(this) {
+
 			private static final long serialVersionUID = 1L;
 
-			protected ACLMessage handleRequest(ACLMessage request) throws NotUnderstoodException, RefuseException {
-				if(answer==null)
-				{
-					System.out.println("player received new question");
-					String question = request.getContent();
-					String[] strs = question.split(":-:");
-					Integer round = Integer.valueOf(strs[0]);
-					question = strs[1];
-					Question q = KnowledgeBase.getInstance().getQuestion(question);
-					String source = trustModel.chooseSource(q.category, round);
-					addBehaviour(getAnswer(question,source, this));
-					block();
-					return null;
-				}else
-				{
-					//ask
-					System.out.println("player returned to new question");
-					ACLMessage inform = request.createReply();
-					inform.setPerformative(ACLMessage.INFORM);
-					inform.setContent(answer);
-					answer = null;
-					return inform;	
-				}
-			}
-			
-		} );
-	}
+			public void action() {
 
-	private AchieveREInitiator getAnswer(String question, String source, AchieveREResponder pending) {
-		// Fill the REQUEST message
-		ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
-			msg.addReceiver(new AID(source, AID.ISLOCALNAME));
-		
-		msg.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
-		msg.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
-		msg.setContent(question);
-		
-		AchieveREResponder pendingResponder = pending;
-		
-		return new AchieveREInitiator(this, msg) {
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
+		      ACLMessage request = myAgent.blockingReceive(template);
+		      if(request==null)
+		      {
+		    	  System.err.println(myAgent.getLocalName() + " didn't receive any message. He feels lonely. :(");
+		    	  return;
+		      }
+		    	  String question = request.getContent();
+		    	  String[] strs = question.split(":-:");
+		    	  Integer round = Integer.valueOf(strs[0]);
+		    	  question = strs[1];
+		    	  System.out.println(myAgent.getLocalName() + " received new question: "+question);
+		    	  Question q = KnowledgeBase.getInstance().getQuestion(question);
+		    	  String source = trustModel.chooseSource(q.category, round);
+		    	  
+		    ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
+			msg.addReceiver(new AID(source, AID.ISGUID));				
+				msg.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
+				msg.setContent(question);
+				myAgent.send(msg);
 
-			protected void handleInform(ACLMessage inform) {
-				System.out.println("got the answer");
-				answer = inform.getContent();
-			}
-
-			protected void handleRefuse(ACLMessage refuse) {
-				System.out.println("Agent "+refuse.getSender().getName()+" refused to perform the requested action");
-			}
-			protected void handleFailure(ACLMessage failure) {
-				if (failure.getSender().equals(myAgent.getAMS())) {
-					System.out.println("agent does not exist");
-				}
-				else {
-					System.out.println("Agent "+failure.getSender().getName()+" failed to perform the requested action");
-				}
-			}
-			
-			@SuppressWarnings("rawtypes")
-			protected void handleAllResultNotifications(Vector notifications) {
-				System.out.println("sources returned");
-				pendingResponder.restart();
-			}
-		};
+				ACLMessage answer = myAgent.blockingReceive(templateReply,1000);
+			      if(answer==null)
+			      {
+			    	  System.err.println(myAgent.getLocalName() + " says: my sources didn't reply.");
+			    	  return;
+			      }
+				String answerstr = answer.getContent();
+				System.out.println(myAgent.getLocalName() + " says: Got answer "+answerstr);
+				ACLMessage reply = request.createReply();
+				reply.setPerformative(ACLMessage.INFORM);
+				reply.setContent(answerstr);
+				myAgent.send(reply);
+				
+			    ACLMessage score = myAgent.blockingReceive(templateReply,1000);
+			    if(score==null)
+			      {
+			    	  System.err.println(myAgent.getLocalName() + " says: Was it correct? Was it wrong? The asker didnt reply");
+			    	  return;
+			      }
+			    int updown = Integer.valueOf(score.getContent());
+				System.out.println("Got score info "+updown);
+			    trustModel.addRecord(round, updown==1 ? true : false, source, q.category);
+		    }
+		  } );
+		
 	}
 }
-

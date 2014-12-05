@@ -20,8 +20,8 @@ public abstract class TrustModel {
 		}
 	}
 
-    protected List<String> sourceIds = new ArrayList<>();
-	protected List<Record> records = new ArrayList<>();
+    protected List<String> sourceIds = new ArrayList<String>();
+	protected List<Record> records = new ArrayList<Record>();
 
 	public void addRecord(Integer round, Boolean correctAnswer, String sourceId, Category category) {
 		records.add(new Record(round, correctAnswer, sourceId, category));
