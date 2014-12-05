@@ -69,7 +69,6 @@ public class PlayerAgent extends Agent {
 			this.trustModel.addSourceId(sources[i]);
 		
 		addBehaviour(new CyclicBehaviour(this) {
-
 			private static final long serialVersionUID = 1L;
 
 			public void action() {
@@ -82,11 +81,12 @@ public class PlayerAgent extends Agent {
 		      }
 		    	  String question = request.getContent();
 		    	  String[] strs = question.split(":-:");
+		    	  @SuppressWarnings("unused")
 		    	  Integer round = Integer.valueOf(strs[0]);
 		    	  question = strs[1];
 		    	  System.out.println(myAgent.getLocalName() + " received new question: "+question);
 		    	  Question q = KnowledgeBase.getInstance().getQuestion(question);
-		    	  String source = trustModel.chooseSource(q.category, round);
+		    	  String source = trustModel.chooseSource(q.category);
 		    	  
 		    ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
 			msg.addReceiver(new AID(source, AID.ISGUID));				
@@ -115,7 +115,7 @@ public class PlayerAgent extends Agent {
 			      }
 			    int updown = Integer.valueOf(score.getContent());
 				System.out.println("Got score info "+updown);
-			    trustModel.addRecord(round, updown==1 ? true : false, source, q.category);
+			    trustModel.addRecord(updown==1 ? true : false, source, q.category);
 		    }
 		  } );
 		
