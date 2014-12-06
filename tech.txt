@@ -1,0 +1,120 @@
+1. 	
+In which decade was the American Institute of Electrical Engineers (AIEE) founded?
+
+A.	1850s	
+B.	1880s
+C.	1930s	
+D.	1950s
+B
+2. 	
+What is part of a database that holds only one type of information?
+
+A.	Report	
+B.	Field
+C.	Record	
+D.	File
+B
+3. 	
+'OS' computer abbreviation usually means ?
+
+A.	Order of Significance
+B.	Open Software
+C.	Operating System
+D.	Optical Sensor
+C
+4. 	
+In which decade with the first transatlantic radio broadcast occur?
+
+A.	1850s	
+B.	1860s
+C.	1870s	
+D.	1900s
+D
+5. 	
+'.MOV' extension refers usually to what kind of file?
+
+A.	Image file
+B.	Animation/movie file
+C.	Audio file
+D.	MS Office document
+B
+6. 	
+In which decade was the SPICE simulator introduced?
+
+A.	1950s	
+B.	1960s
+C.	1970s	
+D.	1980s
+C
+7. 	
+Most modern TV's draw power even if turned off. The circuit the power is used in does what function?
+
+A.	Sound
+B.	Remote control
+C.	Color balance
+D.	High voltage
+B
+8. 	
+Which is a type of Electrically-Erasable Programmable Read-Only Memory?
+
+A.	Flash	
+B.	Flange
+C.	Fury	
+D.	FRAM
+A
+9. 	
+The purpose of choke in tube light is ?
+
+A.	To decrease the current
+B.	To increase the current
+C.	To decrease the voltage momentarily
+D.	To increase the voltage momentarily
+D
+10. 	
+'.MPG' extension refers usually to what kind of file?
+
+A.	WordPerfect Document file
+B.	MS Office document
+C.	Animation/movie file
+D.	Image file
+C
+11. 	
+Who is largely responsible for breaking the German Enigma codes, created a test that provided a foundation for artificial intelligence?
+
+A.	Alan Turing
+B.	Jeff Bezos
+C.	George Boole
+D.	Charles Babbage
+A
+12. 	
+Who developed Yahoo?
+
+A.	Dennis Ritchie & Ken Thompson
+B.	David Filo & Jerry Yang
+C.	Vint Cerf & Robert Kahn
+D.	Steve Case & Jeff Bezos
+B
+13. 	
+Made from a variety of materials, such as carbon, which inhibits the flow of current...?
+
+A.	Choke	
+B.	Inductor
+C.	Resistor	
+D.	Capacitor
+C
+14. 	
+The most common format for a home video recorder is VHS. VHS stands for...?
+
+A.	Video Home System
+B.	Very high speed
+C.	Video horizontal standard
+D.	Voltage house standard
+A
+15. 	
+What does VVVF stand for?
+
+A.	Variant Voltage Vile Frequency
+B.	Variable Velocity Variable Fun
+C.	Very Very Vicious Frequency
+D.	Variable Voltage Variable Frequency
+D
