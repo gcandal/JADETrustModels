@@ -56,11 +56,11 @@ public class MainFrame extends JFrame{
                 beta.addSourceId("c");
                 beta.addSourceId("d");
                 for (int i = 0; i < 15; i++) {
-                    beta.addRecord(true, "a", Category.DESPORTO);
+                    beta.addRecord(true, "a", Category.GENERAL);
                 }
-                String specialist = beta.chooseSource(Category.DESPORTO);
+                String specialist = beta.chooseSource(Category.GENERAL);
                 System.out.println(specialist);
-                ArrayList<Double> chartValues = beta.getTrust(specialist, Category.DESPORTO);
+                ArrayList<Double> chartValues = beta.getTrust(specialist, Category.GENERAL);
                 Chart.drawSinalpha(chartValues);
 
             } else if(btn == sinalphaButton){
@@ -71,11 +71,11 @@ public class MainFrame extends JFrame{
                 sinalpha.addSourceId("d");
                 String source="";
                 for (int i = 0; i < 15; i++) {
-                    source = sinalpha.chooseSource(Category.DESPORTO);
-                    sinalpha.addRecord(true, source, Category.DESPORTO);
+                    source = sinalpha.chooseSource(Category.GENERAL);
+                    sinalpha.addRecord(true, source, Category.GENERAL);
                 }
-                String specialist = sinalpha.chooseSource(Category.DESPORTO);
-                ArrayList<Double> chartValues = sinalpha.getTrust(specialist, Category.DESPORTO);
+                String specialist = sinalpha.chooseSource(Category.GENERAL);
+                ArrayList<Double> chartValues = sinalpha.getTrust(specialist, Category.GENERAL);
                 Chart.drawSinalpha(chartValues);
             }
         }

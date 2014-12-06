@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Random;
 
 public enum Category {
-    GERAL,
-    DESPORTO,
-    COZINHA;
+    GENERAL,
+    PHYSICS,
+    TECHNOLOGY;
 
     private static final List<Category> values = Collections.unmodifiableList(Arrays.asList(values()));
     private static final int size = values.size();
