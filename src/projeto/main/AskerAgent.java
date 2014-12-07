@@ -11,31 +11,51 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
 
+import projeto.gui.Printer;
+import projeto.gui.QuizInterface;
+
 public class AskerAgent extends Agent {
 	
 	private static final long serialVersionUID = 1L;
-
+	public static AskerAgent instance;
+	private QuizInterface controller;
 	private int nQuestions = 0;
 	private String[] players;
 	private HashMap<String, Integer> score;
 	private int current_round = 0;
 	private ArrayList<Question> questions;
+	private boolean ready;
+	private boolean iscontrolled;
+	
+	public AskerAgent()
+	{
+		super();
+		instance = this;
+	}
 	
 	protected void setup() {
 		String[] args = (String[]) getArguments();
 
 		nQuestions = Integer.parseInt(args[0]);
-		players = new String[args.length-1];
+		iscontrolled = Boolean.valueOf(args[1]);
+		players = new String[args.length-2];
 		for(int i = 0; i < players.length; i++)
-			players[i] = args[i+1];		
+			players[i] = args[i+2];		
 		score = new HashMap<String, Integer>();
 		questions = KnowledgeBase.getInstance().getNRandomQuestions(nQuestions);
-		askQuestion();
+		ready = true;
+		Printer.println("Asker is ready.");
+		if(!iscontrolled)
+			askQuestion();
 	}
 
 	
-	private void askQuestion() {
-		addBehaviour(sendQuestion());
+	public void askQuestion() {
+		if(ready)
+		{
+			ready = false;
+			addBehaviour(sendQuestion());
+		}
 	}
 
 	private AchieveREInitiator sendQuestion() {
@@ -48,14 +68,20 @@ public class AskerAgent extends Agent {
 		msg.setProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST);
 		msg.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
 		msg.setContent(current_round + ":-:" + questions.get(current_round).questionText);
+		if(iscontrolled)
+			controller.setQuestion(questions.get(current_round));
 
-		System.out.println("Asking " + players.length + " players...");
+		Printer.println("Asking " + players.length + " players...");
 		
 		return new AchieveREInitiator(this, msg) {
 			private static final long serialVersionUID = 1L;
 
 			protected void handleInform(ACLMessage inform) {
 				String answer = inform.getContent();
+				
+				if(controller!=null)
+					controller.setPlayerAnswer(inform.getSender().getName(), answer);
+				
 				int correct;
 				Question currentq = questions.get(current_round);
 				if(answer.equals(currentq.answersText[currentq.rightAnswer]))
@@ -64,7 +90,7 @@ public class AskerAgent extends Agent {
 				
 				updateScore(inform, correct);
 				
-				System.out.println("Agent "+inform.getSender().getLocalName()+" answered " + answer);
+				Printer.println("Agent "+inform.getSender().getLocalName()+" answered " + answer);
 				
 				ACLMessage tellscore = inform.createReply();
 				tellscore.setPerformative(ACLMessage.INFORM);
@@ -73,16 +99,16 @@ public class AskerAgent extends Agent {
 			}
 
 			protected void handleRefuse(ACLMessage refuse) {
-				System.out.println("Agent "+refuse.getSender().getLocalName()+" refused to perform the requested action");
+				Printer.println("Agent "+refuse.getSender().getLocalName()+" refused to perform the requested action");
 				updateScore(refuse, -1);
 			}
 			protected void handleFailure(ACLMessage failure) {
 				if (failure.getSender().equals(myAgent.getAMS())) {
-					System.out.println("Responder does not exist");
+					Printer.println("Responder does not exist");
 				}
 				else {
 					updateScore(failure, -1);
-					System.out.println("Agent "+failure.getSender().getLocalName()+" failed to perform the requested action");
+					Printer.println("Agent "+failure.getSender().getLocalName()+" failed to perform the requested action");
 				}
 			}
 			
@@ -91,17 +117,18 @@ public class AskerAgent extends Agent {
 					System.err.println("Agent(s) missing. Where are them? :o");
 				
 				score.forEach((name,score) -> {
-					System.out.print(name + " score ");
-					System.out.println(score);});
+					Printer.println(name + " score " + Integer.toString(score));});
 				
 				if( current_round < nQuestions-1)
 				{
 					current_round++;
-					System.out.println("Next Round!");
-					askQuestion();
+					Printer.println("Next Round!");
+					ready = true;
+					if(!iscontrolled)
+						askQuestion();
 				} else
 				{
-					System.out.println("Game is over");
+					Printer.println("Game is over");
 				}
 			}
 		};
@@ -110,8 +137,24 @@ public class AskerAgent extends Agent {
 
 	private void updateScore(ACLMessage inform, int correct) {
 		Integer current_score = score.get(inform.getSender().getLocalName());
-		if(current_score!=null)
-			score.put(inform.getSender().getLocalName(), current_score+correct);
-		else score.put(inform.getSender().getLocalName(), correct);
+		if(current_score==null)
+			current_score = 0;
+		
+		int newscore = current_score+correct;
+		
+		if(controller!=null)
+			controller.setPlayerScore(inform.getSender().getName(), String.valueOf(newscore));
+
+		score.put(inform.getSender().getLocalName(),newscore);
+	}
+
+
+	public QuizInterface getController() {
+		return controller;
+	}
+
+
+	public void setController(QuizInterface controller) {
+		this.controller = controller;
 	}
 }

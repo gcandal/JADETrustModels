@@ -37,10 +37,10 @@ public class KnowledgeBaseParser {
 
                 questions.add(new Question(questionText, answersText.clone(), rightAnswer, category));
             }
+            input.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
         questions.stream().forEach(knowledgeBase::addQuestion);
     }
 

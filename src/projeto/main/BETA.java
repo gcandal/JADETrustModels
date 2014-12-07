@@ -21,7 +21,7 @@ public class BETA implements TrustModel {
         String maxSourceId = "";
 
         for (Map.Entry<String, SourceTrust> e : categoryTrust.get(category).entrySet()) {
-            // System.out.println(e.getKey());
+            // Printer.println(e.getKey());
             if (e.getValue().trust.size() > 0)
                 currentValue = e.getValue().trust.get(e.getValue().trust.size() - 1);
             else

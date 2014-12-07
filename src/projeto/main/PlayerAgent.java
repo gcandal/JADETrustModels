@@ -24,6 +24,10 @@
  */
 package projeto.main;
 
+import java.util.ArrayList;
+
+import projeto.gui.Chart;
+import projeto.gui.Printer;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
@@ -35,10 +39,11 @@ public class PlayerAgent extends Agent {
 	private static final long serialVersionUID = 1L;
 	private TrustModel trustModel;
 	private String[] sources;
-
+	private boolean iscontrolled;
+	
 	protected void setup() {
 		
-		System.out.println("Agent "+getLocalName()+" waiting for requests...");
+		Printer.println("Agent "+getLocalName()+" waiting for requests...");
 		MessageTemplate template = MessageTemplate.and(
 				MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
 				MessageTemplate.MatchPerformative(ACLMessage.REQUEST) );
@@ -49,9 +54,10 @@ public class PlayerAgent extends Agent {
 
 		String[] args = (String[]) getArguments();
 		String trustModelstr = args[0];
-		sources = new String[args.length-1];
+		iscontrolled = Boolean.valueOf(args[1]);
+		sources = new String[args.length-2];
 		for(int i = 0; i < sources.length; i++)
-			sources[i] = args[i+1];
+			sources[i] = args[i+2];
 
 		switch(trustModelstr) {
 		case "BETA":
@@ -84,7 +90,7 @@ public class PlayerAgent extends Agent {
 		    	  @SuppressWarnings("unused")
 		    	  Integer round = Integer.valueOf(strs[0]);
 		    	  question = strs[1];
-		    	  System.out.println(myAgent.getLocalName() + " received new question: "+question);
+		    	  Printer.println(myAgent.getLocalName() + " received new question: "+question);
 		    	  Question q = KnowledgeBase.getInstance().getQuestion(question);
 		    	  String source = trustModel.chooseSource(q.category);
 		    	  
@@ -101,7 +107,7 @@ public class PlayerAgent extends Agent {
 			    	  return;
 			      }
 				String answerstr = answer.getContent();
-				System.out.println(myAgent.getLocalName() + " says: Got answer "+answerstr);
+				Printer.println(myAgent.getLocalName() + " says: Got answer "+answerstr);
 				ACLMessage reply = request.createReply();
 				reply.setPerformative(ACLMessage.INFORM);
 				reply.setContent(answerstr);
@@ -114,8 +120,15 @@ public class PlayerAgent extends Agent {
 			    	  return;
 			      }
 			    int updown = Integer.valueOf(score.getContent());
-				System.out.println("Got score info "+updown);
+				Printer.println("Got score info "+updown);
 			    trustModel.addRecord(updown==1 ? true : false, source, q.category);
+			    if(iscontrolled)
+			    {
+			    	//TODO Fix drawing
+	                ArrayList<Double> chartValues = trustModel.getTrust(source, q.category);
+	                if(chartValues.size()>1)
+	                	Chart.drawSinalpha(chartValues);	
+			    }
 		    }
 		  } );
 		

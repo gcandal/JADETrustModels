@@ -5,7 +5,7 @@ import jade.tools.rma.rma;
 import jade.wrapper.AgentContainer;
 import jade.wrapper.AgentController;
 
-public class GUI {
+public class Launcher {
 
     public static void main(String[] args) {
     	
@@ -32,15 +32,15 @@ public class GUI {
 			AgentController source2 = container.createNewAgent("source1", SourceAgent.class.getName(), asource2);
 			source2.start();
 
-			String aPlayer[]={BETA.class.getSimpleName(),source1.getName(),source2.getName()};
+			String aPlayer[]={BETA.class.getSimpleName(),"true",source1.getName(),source2.getName()};
 			AgentController player1 = container.createNewAgent("player0", PlayerAgent.class.getName(), aPlayer);
 			player1.start();
 
-			String aPlayer2[]={Sinalpha.class.getSimpleName(),source1.getName(),source2.getName()};
+			String aPlayer2[]={Sinalpha.class.getSimpleName(),"true",source1.getName(),source2.getName()};
 			AgentController player2 = container.createNewAgent("player1", PlayerAgent.class.getName(), aPlayer2);
 			player2.start();
 
-			String aAsker[] = {"50",player1.getName(),player2.getName()};
+			String aAsker[] = {"50","false",player1.getName(),player2.getName()};
 			AgentController asker = container.createNewAgent("asker", AskerAgent.class.getName(), aAsker);
 			asker.start();
 

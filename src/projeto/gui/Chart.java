@@ -1,4 +1,4 @@
-package projeto.main;
+package projeto.gui;
 
 /**
  *
@@ -29,6 +29,7 @@ import static com.googlecode.charts4j.Color.*;
 import static com.googlecode.charts4j.UrlUtil.normalize;
 import static org.junit.Assert.assertEquals;
 
+import java.awt.BorderLayout;
 import java.awt.Desktop;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -40,6 +41,11 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -116,8 +122,13 @@ public class Chart {
         String url = chart.toURLString();
 
         try {
-            openWebpage(new URL(url));
-        } catch (MalformedURLException e) {
+            JFrame frame = new JFrame();
+            JLabel label = new JLabel(new ImageIcon(ImageIO.read(new URL(url))));
+            frame.getContentPane().add(label, BorderLayout.CENTER);
+            frame.pack();
+            frame.setVisible(true);
+            //openWebpage(new URL(url));
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
