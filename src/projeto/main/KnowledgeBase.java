@@ -45,6 +45,22 @@ public class KnowledgeBase {
         return random_questions;
     }
 
+    public ArrayList<Question> getNRandomDiffQuestions(Integer n) {
+        ArrayList<Question> random_questions = new ArrayList<>();
+
+        IntStream.range(0, n)
+                .forEach(x -> {
+                    Question possible_question = unsorted_questions.get(random.nextInt(unsorted_questions.size()));
+
+                    while(random_questions.contains(possible_question))
+                        possible_question = unsorted_questions.get(random.nextInt(unsorted_questions.size()));
+
+                    random_questions.add(possible_question);
+                });
+
+        return random_questions;
+    }
+
     private KnowledgeBase() {
     }
 

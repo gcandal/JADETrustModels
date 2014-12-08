@@ -90,7 +90,7 @@ public class PlayerAgent extends Agent {
 		    	  @SuppressWarnings("unused")
 		    	  Integer round = Integer.valueOf(strs[0]);
 		    	  question = strs[1];
-		    	  Printer.println(myAgent.getLocalName() + " received new question: "+question);
+		    	  //Printer.println(myAgent.getLocalName() + " received new question: "+question);
 		    	  Question q = KnowledgeBase.getInstance().getQuestion(question);
 		    	  String source = trustModel.chooseSource(q.category);
 		    	  
@@ -107,7 +107,7 @@ public class PlayerAgent extends Agent {
 			    	  return;
 			      }
 				String answerstr = answer.getContent();
-				Printer.println(myAgent.getLocalName() + " says: Got answer "+answerstr);
+				//Printer.println(myAgent.getLocalName() + " says: Got answer "+answerstr);
 				ACLMessage reply = request.createReply();
 				reply.setPerformative(ACLMessage.INFORM);
 				reply.setContent(answerstr);
@@ -120,14 +120,16 @@ public class PlayerAgent extends Agent {
 			    	  return;
 			      }
 			    int updown = Integer.valueOf(score.getContent());
-				Printer.println("Got score info "+updown);
+				//Printer.println("Got score info "+updown);
 			    trustModel.addRecord(updown==1 ? true : false, source, q.category);
 			    if(iscontrolled)
 			    {
 			    	//TODO Fix drawing
+                    /*
 	                ArrayList<Double> chartValues = trustModel.getTrust(source, q.category);
 	                if(chartValues.size()>1)
-	                	Chart.drawSinalpha(chartValues);	
+	                	Chart.drawSinalpha(chartValues);
+	                	*/
 			    }
 		    }
 		  } );

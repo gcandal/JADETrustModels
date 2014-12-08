@@ -33,32 +33,50 @@ public class QuizInterface {
 	private void lauchAgents()
 	{
 	        KnowledgeBase knowledgeBase = KnowledgeBase.getInstance();
-	        KnowledgeBaseParser.parseFile(knowledgeBase, Category.GENERAL);
-	        KnowledgeBaseParser.parseFile(knowledgeBase, Category.PHYSICS);
-	        KnowledgeBaseParser.parseFile(knowledgeBase, Category.TECHNOLOGY);
+            knowledgeBase.fillRandom(1000);
+	        //KnowledgeBaseParser.parseFile(knowledgeBase, Category.GENERAL);
+	        //KnowledgeBaseParser.parseFile(knowledgeBase, Category.PHYSICS);
+	        //KnowledgeBaseParser.parseFile(knowledgeBase, Category.TECHNOLOGY);
 	         
 			AgentContainer container = jade.core.Runtime.instance().createMainContainer( new ProfileImpl() );
 			try {
 				AgentController rma = container.createNewAgent("rma", rma.class.getName(), null);
 			    rma.start();
 
-				String asource[]={"","0.7"};
-				AgentController source1 = container.createNewAgent("source0", SourceAgent.class.getName(), asource);
-				source1.start();
+				String asource[]={"","0.9"};
+                AgentController source1 = container.createNewAgent("source0", SourceAgent.class.getName(), asource);
+                source1.start();
 
-				String asource2[]={Category.GENERAL.toString(),"0.7","0.5"};
+				String asource2[]={Category.GENERAL.toString(),"0.1","0.9"};
+                //String asource2[]={"","0.3"};
 				AgentController source2 = container.createNewAgent("source1", SourceAgent.class.getName(), asource2);
 				source2.start();
 
-				String aPlayer[]={BETA.class.getSimpleName(),"true",source1.getName(),source2.getName()};
-				AgentController player1 = container.createNewAgent("player0", PlayerAgent.class.getName(), aPlayer);
+                String asource3[]={Category.PHYSICS.toString(),"0.1","0.9"};
+                //String asource3[]={"","0.7"};
+                AgentController source3 = container.createNewAgent("source2", SourceAgent.class.getName(), asource3);
+                source3.start();
+
+                String asource4[]={"","0.9"};
+                AgentController source4 = container.createNewAgent("source3", SourceAgent.class.getName(), asource4);
+                source4.start();
+
+                String asource5[]={"","0.9"};
+                AgentController source5 = container.createNewAgent("source4", SourceAgent.class.getName(), asource5);
+                source5.start();
+
+
+				//String aPlayer[]={BETA.class.getSimpleName(),"true",source1.getName(),source2.getName()};
+                String aPlayer[]={BETA.class.getSimpleName(),"true",source1.getName(),source2.getName(),source3.getName(),source4.getName(),source5.getName()};
+                AgentController player1 = container.createNewAgent("player0", PlayerAgent.class.getName(), aPlayer);
 				player1.start();
 
-				String aPlayer2[]={Sinalpha.class.getSimpleName(),"true",source1.getName(),source2.getName()};
-				AgentController player2 = container.createNewAgent("player1", PlayerAgent.class.getName(), aPlayer2);
+				//String aPlayer2[]={Sinalpha.class.getSimpleName(),"true",source1.getName(),source2.getName()};
+                String aPlayer2[]={Sinalpha.class.getSimpleName(),"true",source1.getName(),source2.getName(),source3.getName(),source4.getName(),source5.getName()};
+                AgentController player2 = container.createNewAgent("player1", PlayerAgent.class.getName(), aPlayer2);
 				player2.start();
 
-				String aAsker[] = {"40","true",player1.getName(),player2.getName()};
+				String aAsker[] = {"1000","false",player1.getName(),player2.getName()};
 				String playersNames[] = {player1.getName(),player2.getName()};
 				addPlayersToGui(playersNames);
 				AgentController asker = container.createNewAgent("asker", AskerAgent.class.getName(), aAsker);

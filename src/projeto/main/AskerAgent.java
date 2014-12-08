@@ -71,7 +71,7 @@ public class AskerAgent extends Agent {
 		if(iscontrolled)
 			controller.setQuestion(questions.get(current_round));
 
-		Printer.println("Asking " + players.length + " players...");
+		//Printer.println("Asking " + players.length + " players...");
 		
 		return new AchieveREInitiator(this, msg) {
 			private static final long serialVersionUID = 1L;
@@ -86,11 +86,11 @@ public class AskerAgent extends Agent {
 				Question currentq = questions.get(current_round);
 				if(answer.equals(currentq.answersText[currentq.rightAnswer]))
 					correct = 1;
-				else correct = -1;
+				else correct = 0;
 				
 				updateScore(inform, correct);
 				
-				Printer.println("Agent "+inform.getSender().getLocalName()+" answered " + answer);
+				//Printer.println("Agent "+inform.getSender().getLocalName()+" answered " + answer);
 				
 				ACLMessage tellscore = inform.createReply();
 				tellscore.setPerformative(ACLMessage.INFORM);
@@ -99,16 +99,16 @@ public class AskerAgent extends Agent {
 			}
 
 			protected void handleRefuse(ACLMessage refuse) {
-				Printer.println("Agent "+refuse.getSender().getLocalName()+" refused to perform the requested action");
+				//Printer.println("Agent "+refuse.getSender().getLocalName()+" refused to perform the requested action");
 				updateScore(refuse, -1);
 			}
 			protected void handleFailure(ACLMessage failure) {
 				if (failure.getSender().equals(myAgent.getAMS())) {
-					Printer.println("Responder does not exist");
+					//Printer.println("Responder does not exist");
 				}
 				else {
 					updateScore(failure, -1);
-					Printer.println("Agent "+failure.getSender().getLocalName()+" failed to perform the requested action");
+					//Printer.println("Agent "+failure.getSender().getLocalName()+" failed to perform the requested action");
 				}
 			}
 			
@@ -116,18 +116,20 @@ public class AskerAgent extends Agent {
 				if(notifications.size()!=players.length)
 					System.err.println("Agent(s) missing. Where are them? :o");
 				
-				score.forEach((name,score) -> {
-					Printer.println(name + " score " + Integer.toString(score));});
+				//score.forEach((name,score) -> {
+				//	Printer.println(name + " score " + Integer.toString(score));});
 				
 				if( current_round < nQuestions-1)
 				{
 					current_round++;
-					Printer.println("Next Round!");
+					//Printer.println("Next Round!");
 					ready = true;
 					if(!iscontrolled)
 						askQuestion();
 				} else
 				{
+                    score.forEach((name,score) -> {
+                        Printer.println(name + " score " + Integer.toString(score));});
 					Printer.println("Game is over");
 				}
 			}

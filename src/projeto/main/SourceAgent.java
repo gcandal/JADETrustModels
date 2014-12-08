@@ -43,7 +43,7 @@ public class SourceAgent extends Agent {
                 ACLMessage inform = request.createReply();
                 inform.setPerformative(ACLMessage.INFORM);
                 String question = request.getContent();
-                Printer.println("Agent "+getLocalName()+" got the question: "+question);
+                //Printer.println("Agent "+getLocalName()+" got the question: "+question);
                 
                 String content = "dont know";
                 
@@ -53,25 +53,25 @@ public class SourceAgent extends Agent {
                 	{
                 		if(r.nextFloat()>=randomnessPercentage)
                 		{
-                            Printer.println("Agent "+getLocalName()+" says: i'm not an expert but I'm answering right");
+                            //Printer.println("Agent "+getLocalName()+" says: i'm not an expert but I'm answering right");
                     		content = q.answersText[q.rightAnswer];
                 		}
                     	else{
-                            Printer.println("Agent "+getLocalName()+" says: i'm not an expert and I'm answering randomly");
-                            Printer.println("Agent "+getLocalName()+" got the question: "+question);
+                            //Printer.println("Agent "+getLocalName()+" says: i'm not an expert and I'm answering randomly");
+                            //Printer.println("Agent "+getLocalName()+" got the question: "+question);
                     		content = q.answersText[r.nextInt(4)];
                     	}
                 	}else               	
                     {
                 		if(r.nextFloat()>=randomnessForCategoryPercentage)
                 		{
-                            Printer.println("Agent "+getLocalName()+" says: i'm an expert in this category and I'm answering right");
+                            //Printer.println("Agent "+getLocalName()+" says: i'm an expert in this category and I'm answering right");
                     		content = q.answersText[q.rightAnswer];
                 		}
                     	else
                     		{
                     		 content = q.answersText[r.nextInt(4)];
-                             Printer.println("Agent "+getLocalName()+" says: i'm an expert in this category but I'm answering randomly");
+                             //Printer.println("Agent "+getLocalName()+" says: i'm an expert in this category but I'm answering randomly");
                     		}
                     }
                 
