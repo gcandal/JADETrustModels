@@ -15,8 +15,11 @@ public class Printer {
 			text.append(s);
 			text.append("\n");
 			output.setText(text.toString());
-			JScrollBar vertical = scroll.getVerticalScrollBar();
-			vertical.setValue( vertical.getMaximum() );
+			if(scroll != null)
+			{
+				JScrollBar vertical = scroll.getVerticalScrollBar();
+				vertical.setValue( vertical.getMaximum() );
+			}
 		}else
 			System.out.println(s);
 	}
