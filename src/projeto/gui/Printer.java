@@ -8,17 +8,18 @@ public class Printer {
 	public static JTextPane output;
 	public static JScrollPane scroll;
 	public static StringBuilder text = new StringBuilder();
-	public static void println(String s)
+	public static synchronized void println(String s)
 	{
 		if(output!=null)
 		{
 			text.append(s);
 			text.append("\n");
 			output.setText(text.toString());
-			if(scroll != null)
-			{
+			try{
 				JScrollBar vertical = scroll.getVerticalScrollBar();
 				vertical.setValue( vertical.getMaximum() );
+			} catch(Exception e)
+			{
 			}
 		}else
 			System.out.println(s);
