@@ -40,6 +40,7 @@ public class PlayerAgent extends Agent {
 	private TrustModel trustModel;
 	private String[] sources;
 	private boolean iscontrolled;
+	private Chart chart;
 	
 	protected void setup() {
 		
@@ -70,9 +71,11 @@ public class PlayerAgent extends Agent {
 			assert(false);
 			break;
 		}
-		
+
 		for(int i = 0; i < sources.length; i++)
 			this.trustModel.addSourceId(sources[i]);
+
+		chart = new Chart(getLocalName());
 		
 		addBehaviour(new CyclicBehaviour(this) {
 			private static final long serialVersionUID = 1L;
@@ -124,10 +127,19 @@ public class PlayerAgent extends Agent {
 			    trustModel.addRecord(updown==1 ? true : false, source, q.category);
 			    if(iscontrolled)
 			    {
-			    	//TODO Fix drawing
 	                ArrayList<Double> chartValues = trustModel.getTrust(source, q.category);
-	                if(chartValues.size()>1)
-	                	Chart.drawSinalpha(chartValues);	
+					for (int i = 0; i < chartValues.size(); i++) {
+						if(i != 0 && chartValues.get(i)==chartValues.get(i-1)){
+							chartValues.remove(i);
+							i--;
+						}
+					}
+					if(chartValues.size()>1){
+						chart.addLine(chartValues,source,q.category.name());
+						chart.draw();
+
+					}
+
 			    }
 		    }
 		  } );
